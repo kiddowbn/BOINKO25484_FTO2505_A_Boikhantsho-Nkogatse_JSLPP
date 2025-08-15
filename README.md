@@ -106,6 +106,8 @@ script.js/: This directory contains the JavaScript logic, organized into modules
 
 The application features task management (CRUD operations), local data persistence, theme switching (light/dark mode), and a responsive layout.
 
-loom link;
+loom link; https://www.loom.com/share/b8596e7a6d764dfbac492d1e314a08ab?sid=82bcbab3-09d3-4d37-99b9-2574b00818c1
+
+https://www.loom.com/share/72648ef26f4a4b259fd1b706bca6fa53?sid=9f98a184-93dc-43c8-b5a7-54ebabfd2a75
 
   netlify link;     https://fantastic-trifle-423f1d.netlify.app
