@@ -1,0 +1,728 @@
+/* ========================
+   Global & Root Variables
+======================== */
+* {
+  box-sizing: border-box;
+}
+:root {
+  --primary-color: #ffffff;
+  --secondary-color: #f4f7fd;
+  --primary-font-color: #000000;
+  --secondary-font-color: #828fa3;
+  --primary-box-shadow: 0px 4px 6px rgba(54, 78, 126, 0.1015);
+  --sidebar-width: 300px;
+  /* Added color variables for close buttons */
+  --close-red: #ea5555;
+  --close-gray: #828fa3; /* Not used anymore, but kept for potential future use */
+  --modal-bg: var(--primary-color);
+  --error-color: #ea5555;
+  --priority-high: #ff4d4d; /* Red */
+  --priority-medium: #ffcc00; /* Yellow */
+  --priority-low: #4caf50; /* Green */
+  /* Added the light purple background color */
+  --light-purple-bg: #E4EBFA;
+}
+/* Dark Mode Variables */
+[data-theme="dark"] {
+  --primary-color: #20212c;
+  --secondary-color: #2b2c37;
+  --primary-font-color: #ffffff;
+  --secondary-font-color: #828fa3;
+  --modal-bg: #2b2c37;
+  --border-color: #33344a;
+  /* Update close button colors for dark mode if needed */
+  --close-red: #ea5555; /* Red often stays the same */
+  --close-gray: #828fa3;
+  /* Ensure light purple background is visible in dark mode */
+  --light-purple-bg: #E4EBFA;
+}
+/* ================
+   Base Elements
+================ */
+body {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  background-color: var(--secondary-color);
+  color: var(--primary-font-color);
+  font-size: 1rem;
+  transition: background-color 0.3s, color 0.3s; /* Smooth transition for theme change */
+}
+/* ================
+   Sidebar Layout
+================ */
+.side-bar {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--primary-color);
+  border-right: 1px solid #e4ebfa;
+  width: var(--sidebar-width);
+  height: 100vh;
+  padding: 33px 0 30px 0; /* Add padding for top and bottom */
+  transition: width 0.3s ease; /* Smooth transition for hiding/showing */
+}
+.side-bar.hidden {
+  width: 0;
+  overflow: hidden;
+}
+#side-logo-div {
+  margin: 0 113px 54px 34px;
+  display: flex;
+  justify-content: flex-start;
+}
+#logo {
+  width: 100%;
+}
+.boards-nav-links-div {
+  display: flex;
+  flex-direction: column;
+  color: var(--primary-font-color);
+  flex-grow: 1; /* Allow it to grow and push theme toggle to bottom */
+}
+#headline-sidepanel {
+  padding: 0 12px 0 50px;
+  color: var(--secondary-font-color);
+}
+.board-btn {
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #635fc7;
+  color: #fff;
+  border: none;
+  border-radius: 0 100px 100px 0;
+  height: 48px;
+  width: 276px;
+  padding: 15px 12px 15px 50px; /* Adjusted padding */
+  font-size: 0.9375rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+/* Updated Hide Sidebar Button - Added hamburger icon styling */
+.hide-sidebar-btn {
+  padding: 10px 15px;
+  background-color: #635fc7; /* Kept original purple background */
+  color: white;
+  border: none;
+  border-radius: 0 100px 100px 0; /* Match board button style */
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-top: auto;
+  text-align: left;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Space between icon and text */
+  width: 276px; /* Match width of board buttons */
+  margin-left: 12px; /* Align with board buttons */
+}
+.hide-sidebar-btn:hover {
+  background-color: #524fbf;
+}
+/* Ensure the icon inside the button is visible */
+.hide-sidebar-btn .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Updated Show Sidebar Button - Added eye emoji and light purple background */
+.show-sidebar-btn {
+  position: fixed;
+  left: 0;
+  bottom: 9%;
+  transform: translateY(-50%);
+  padding: 15px 8px; /* Adjusted padding */
+  background-color: var(--light-purple-bg); /* Light purple background */
+  border: none;
+  color: #635fc7; /* Purple icon/text color */
+  cursor: pointer;
+  font-size: 1.2rem; /* Larger font for emoji */
+  border-radius: 0 10px 10px 0; /* Rounded right corners */
+  transition: background-color 0.3s, left 0.3s ease;
+  z-index: 100;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  display: none; /* Hidden by default, shown via JS when sidebar is hidden */
+}
+.show-sidebar-btn:hover {
+  background-color: #635fc7; /* Slightly darker shade on hover */
+}
+/* Ensure the icon (emoji) inside the button is centered */
+.show-sidebar-btn .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+/* Mobile Sidebar Modal */
+.mobile-sidebar-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.mobile-sidebar-modal:not(.hidden) {
+  display: flex;
+}
+.mobile-sidebar-content {
+  background-color: var(--modal-bg);
+  color: var(--primary-font-color);
+  height: 100%;
+  width: 70%;
+  max-width: 300px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+.mobile-sidebar-content h2 {
+  margin-top: 0;
+  color: var(--secondary-font-color);
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.125rem;
+}
+.mobile-sidebar-board-btn {
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: transparent;
+  color: var(--primary-font-color);
+  border: none;
+  border-radius: 0 100px 100px 0;
+  height: 48px;
+  width: 100%;
+  padding: 0 0 0 20px;
+  font-size: 0.9375rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 10px;
+  text-align: left;
+  transition: background-color 0.3s;
+}
+.mobile-sidebar-board-btn:hover {
+  background-color: var(--secondary-color);
+}
+.mobile-sidebar-board-btn.active {
+  background-color: #635fc7;
+  color: white;
+}
+/* Updated Mobile Theme Toggle Container - Added light purple background */
+.mobile-theme-toggle-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px 0;
+  margin-top: auto;
+  background-color: var(--light-purple-bg); /* Light purple background */
+  border-radius: 8px; /* Rounded corners */
+  width: 100%;
+  max-width: 276px; /* Match sidebar width */
+  margin: 0 auto; /* Center horizontally */
+}
+/* ===============
+   Theme Toggle Switch
+================ */
+/* Updated Theme Toggle Container - Added light purple background */
+.theme-toggle-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px 0;
+  margin-top: auto; /* Push to the bottom */
+  background-color: var(--light-purple-bg); /* Light purple background */
+  border-radius: 8px; /* Rounded corners */
+  width: 100%;
+  max-width: 276px; /* Match sidebar width */
+  margin: 0 auto; /* Center horizontally */
+}
+.theme-label {
+  font-size: 0.8rem;
+  color: var(--secondary-font-color);
+}
+/* The switch - the box around the slider */
+/* Updated Switch - Added light purple background */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+  background-color: var(--light-purple-bg); /* Light purple background */
+  border-radius: 34px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+/* The slider */
+/* Updated Slider - Added light purple background and inner shadow */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--light-purple-bg); /* Light purple background */
+  transition: .4s;
+  border-radius: 34px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); /* Inner shadow for depth */
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Shadow for the handle */
+}
+input:checked + .slider {
+  background-color: #635fc7; /* Purple when checked */
+}
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+/* ===============
+   Main Layout
+================ */
+#layout {
+  flex: 1;
+  overflow-x: hidden;
+  width: 100%;
+  transition: margin-left 0.3s ease; /* Smooth transition for sidebar toggle */
+}
+.full-width {
+  margin-left: 0;
+}
+/* ===============
+   Header Section
+================ */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--primary-color);
+  color: var(--primary-font-color);
+  height: 96px;
+  padding: 0 35px 0 30px;
+  border-bottom: 1px solid #e4ebfa;
+  width: 100%;
+  font-size: 1.875rem;
+  font-weight: 600;
+}
+.header-name-div {
+  display: flex;
+  align-items: center;
+}
+.logo-mobile {
+  display: none;
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* Add space between button and potential other controls */
+}
+#add-task-btn {
+  padding: 12px 18px;
+  background-color: #635fc7;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+#add-task-btn:hover {
+  background-color: #524fbf;
+}
+/* ===============
+   Board Columns
+================ */
+.container {
+  display: flex;
+  flex-direction: column;
+  padding-left: 35px;
+  box-sizing: border-box;
+}
+.card-column-main {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 304px));
+  gap: 8px;
+}
+.column-div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 12px;
+}
+.column-head-div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.columnHeader {
+  font-size: 0.75rem;
+  letter-spacing: 0.125rem;
+  color: var(--secondary-font-color);
+  margin: 0;
+}
+.dot {
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  display: inline-block;
+}
+#todo-dot { background-color: #49c4e5; }
+#doing-dot { background-color: #8471f2; }
+#done-dot { background-color: #219c90; }
+/* ===============
+   Task Cards
+================ */
+.tasks-container {
+  display: flex;
+  flex-direction: column;
+}
+.task-div {
+  display: flex;
+  align-items: center;
+  padding-left: 15px;
+  width: 100%;
+  height: 60px;
+  background-color: var(--primary-color);
+  color: var(--primary-font-color);
+  border-radius: 12px;
+  box-shadow: var(--primary-box-shadow);
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-size: 0.9375rem;
+  font-weight: bold;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.task-div:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+.task-div .priority-dot {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  margin-left: auto;
+  margin-right: 15px;
+}
+.task-div .priority-dot.high {
+  background-color: var(--priority-high);
+}
+.task-div .priority-dot.medium {
+  background-color: var(--priority-medium);
+}
+.task-div .priority-dot.low {
+  background-color: var(--priority-low);
+}
+/* ===============
+   Modal Styles (Add/Edit)
+================ */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+}
+.modal:not(.hidden) {
+  display: flex;
+}
+.modal-content {
+  background-color: var(--modal-bg);
+  color: var(--primary-font-color);
+  margin: auto;
+  padding: 30px;
+  border: 1px solid #e4ebfa; /* Consider using var(--border-color) if defined in dark mode */
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+.modal-content h2 {
+    margin-top: 0;
+}
+/* Base close button style */
+.close {
+  font-size: 28px;
+  font-weight: bold;
+  position: absolute;
+  top: 15px;
+  cursor: pointer;
+}
+/* Specific close button colors */
+.close-red {
+  color: var(--close-red);
+  right: 20px;
+}
+/* If you ever need a gray one again, you can use this */
+.close-gray {
+  color: var(--close-gray);
+  right: 50px;
+}
+.close:hover,
+.close:focus {
+  opacity: 0.7;
+}
+.modal-content label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+.modal-content input,
+.modal-content textarea,
+.modal-content select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #e4ebfa;
+    border-radius: 4px;
+    background-color: var(--modal-bg); /* Use modal background */
+    color: var(--primary-font-color);
+    font-family: inherit;
+    /* Ensure input text is visible in dark mode */
+    border-color: var(--secondary-font-color); /* Use a contrasting border */
+}
+.modal-content input::placeholder,
+.modal-content textarea::placeholder {
+    color: var(--secondary-font-color);
+}
+.modal-content button {
+    width: 100%;
+    padding: 12px;
+    background-color: #635fc7;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+}
+.modal-content button:hover {
+    background-color: #524fbf;
+}
+/* Error Message Styles */
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--error-color);
+  font-size: 0.8rem;
+  margin-top: -8px;
+  margin-bottom: 10px;
+  position: relative;
+  top: -20px;
+  right: -10px;
+  background-color: var(--primary-color);
+  padding: 5px 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.error-icon {
+  font-size: 1.2rem;
+  color: var(--error-color);
+}
+.hidden {
+  display: none;
+}
+/* Delete Button Styles */
+.delete-btn {
+  background-color: var(--close-red) !important;
+  margin-bottom: 15px;
+}
+.delete-btn:hover {
+  background-color: #d03a3a !important;
+}
+.modal-buttons {
+  display: flex;
+  gap: 10px;
+}
+/* Message Styles */
+.message {
+  text-align: center;
+  padding: 20px;
+  font-size: 1.1rem;
+  color: var(--primary-font-color);
+}
+.message.error {
+  color: var(--error-color);
+}
+.message button {
+  padding: 10px 20px;
+  background-color: #635fc7;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 15px;
+}
+.message button:hover {
+  background-color: #524fbf;
+}
+/* ===============
+   Headings
+================ */
+h2 {
+  font-size: 1.5rem;
+  margin: 0;
+}
+h4 {
+  color: var(--secondary-font-color);
+  font-size: 0.75rem;
+  letter-spacing: 0.125rem;
+}
+/* ========================
+   Responsive Styles
+======================== */
+@media screen and (max-width: 1023px) {
+  .side-bar {
+    display: none; /* Or implement a mobile-friendly sidebar toggle */
+  }
+  .show-sidebar-btn {
+    display: none; /* Hide on mobile as sidebar modal is used */
+  }
+  #side-logo-div { display: none; }
+  .logo-mobile { display: block; }
+  body { font-size: 0.8rem; }
+  .board-btn { font-size: 0.8rem; padding-left: 15px; margin-right: 15px; font-weight: 700; }
+  .container { padding: 0; width: 100%; align-items: center; }
+  .card-column-main { grid-template-columns: repeat(2, minmax(0, 360px)); gap: 8px; }
+  header { height: 64px; padding: 0 10px 0 18px; }
+  #header-board-name { font-size: 1rem; }
+  .task-div { width: 100%; }
+  .columnHeader { font-size: 0.75rem; }
+  .dot { height: 8px; width: 8px; }
+  .column-head-div { gap: 8px; }
+  .column-div { width: 100%; }
+  /* Hide theme toggle in sidebar on mobile if it's moved elsewhere */
+  .theme-toggle-container { display: none; }
+  /* Adjust modal content padding for smaller screens */
+  .modal-content {
+    padding: 20px;
+    width: 95%;
+  }
+  /* Adjust close button positions for mobile */
+  .close-red {
+    right: 15px;
+    top: 15px;
+  }
+  .close-gray {
+    right: 45px; /* Adjust spacing */
+    top: 15px;
+  }
+  /* Mobile Sidebar Modal */
+  .mobile-sidebar-content {
+    width: 80%;
+    padding: 15px;
+  }
+  .mobile-sidebar-content h2 {
+    font-size: 0.8rem;
+  }
+  .mobile-sidebar-board-btn {
+    height: 40px;
+    font-size: 0.8rem;
+    padding-left: 15px;
+  }
+  /* Updated Mobile Theme Toggle Container for mobile */
+  .mobile-theme-toggle-container {
+    padding: 15px 0;
+    max-width: 100%; /* Full width on mobile */
+  }
+  .theme-label {
+    font-size: 0.8rem;
+  }
+  .switch {
+    width: 35px;
+    height: 18px;
+  }
+  .switch:before {
+    height: 14px;
+    width: 14px;
+  }
+  input:checked + .slider:before {
+    transform: translateX(17px);
+  }
+}
+@media screen and (max-width: 576px) {
+  .card-column-main { grid-template-columns: minmax(0, 380px); }
+  .column-div { padding: 24px; }
+  /* Further adjust modal content */
+  .modal-content {
+    padding: 15px;
+  }
+   .close-red {
+    right: 10px;
+    top: 10px;
+  }
+  .close-gray {
+    right: 40px;
+    top: 10px;
+  }
+  /* Mobile Sidebar Modal */
+  .mobile-sidebar-content {
+    width: 90%;
+    padding: 10px;
+  }
+  .mobile-sidebar-content h2 {
+    font-size: 0.7rem;
+  }
+  .mobile-sidebar-board-btn {
+    height: 35px;
+    font-size: 0.7rem;
+    padding-left: 10px;
+  }
+  /* Updated Mobile Theme Toggle Container for small mobile */
+  .mobile-theme-toggle-container {
+    padding: 10px 0;
+  }
+  .theme-label {
+    font-size: 0.7rem;
+  }
+  .switch {
+    width: 30px;
+    height: 16px;
+  }
+  .switch:before {
+    height: 12px;
+    width: 12px;
+  }
+  input:checked + .slider:before {
+    transform: translateX(14px);
+  }
+}
