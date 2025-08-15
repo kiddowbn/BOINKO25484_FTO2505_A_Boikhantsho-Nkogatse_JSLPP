@@ -94,3 +94,18 @@ A fully functional Kanban app that:
 - Has a responsive, mobile-friendly sidebar with a theme toggle switch.
 - App deployed to **Netlify** with a custom, readable URL.
 - Uses modular, well-documented code that is easy to maintain and scale.
+
+work completed
+Enhanced Task ID Handling for Local Storage
+Improved Task Loading Logic (taskOperations.initTasks)
+If the API fails, try to load tasks from localStorage.
+
+We revised the uiManager.toggleTheme() function in script.js/uiManager.js. The updated function determines the desired theme state (light or dark) based primarily on the desktop checkbox. It then applies that single state to the body element (which controls the theme via CSS) and explicitly syncs both checkboxes to match that state. This ensures the toggle works reliably and both checkboxes stay in sync.
+
+script.js/: This directory contains the JavaScript logic, organized into modules: * api.js: Handles communication with the backend API (https://jsl-kanban-api.vercel.app). * dataManager.js: Manages the application's data state in-memory and persists it to localStorage. * uiManager.js: Handles updating the user interface (rendering tasks, showing/hiding elements, managing theme and sidebar UI states). * taskOperations.js: Orchestrates task-related actions (add, update, delete, initial loading), including API calls and fallbacks to localStorage. * sidebarManager.js: Manages the logic for showing, hiding, and toggling the main and mobile sidebars. * modalManager.js: Controls the opening, closing, validation, and submission logic for the Add/Edit Task modals and the mobile sidebar modal. * main.js: The entry point that initializes all modules and sets up event listeners once the DOM is loaded.
+
+The application features task management (CRUD operations), local data persistence, theme switching (light/dark mode), and a responsive layout.
+
+loom link;
+
+  netlify link;     https://fantastic-trifle-423f1d.netlify.app
